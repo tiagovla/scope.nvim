@@ -1,4 +1,4 @@
-U = {}
+local U = {}
 
 local function is_valid(buf_num)
     if not buf_num or buf_num < 1 then
