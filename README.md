@@ -6,7 +6,6 @@ buffers to tabs cleaning up tabline plugins like
 [bufferline.nvim](https://github.com/akinsho/bufferline.nvim). 
 
 Buffers belong to tabs, allowing a scoped use of `:bnext` and `:bprev`.
-Requires neovim **nightly**.
 
 ![scope](https://user-images.githubusercontent.com/30515389/156297097-08208d0f-9715-4fc4-8aa0-f5980c21173d.gif)
 

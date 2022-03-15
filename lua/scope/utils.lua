@@ -1,5 +1,10 @@
 local U = {}
 
+function U.is_minimum_version(major, minor, patch)
+    local version = vim.version()
+    return major <= version.major and minor <= version.minor and patch <= version.patch
+end
+
 local function is_valid(buf_num)
     if not buf_num or buf_num < 1 then
         return false
