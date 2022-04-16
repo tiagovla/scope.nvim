@@ -20,7 +20,7 @@ function M._setup()
     api.nvim_create_autocmd("TabEnter", { group = group, callback = core.on_tab_enter })
     api.nvim_create_autocmd("TabLeave", { group = group, callback = core.on_tab_leave })
     api.nvim_create_autocmd("TabClosed", { group = group, callback = core.on_tab_closed })
-    api.nvim_add_user_command("ScopeList", core.print_summary, {}) --TODO: omprove this
+    api.nvim_create_user_command("ScopeList", core.print_summary, {}) --TODO: improve this
 end
 
 function M.setup()
