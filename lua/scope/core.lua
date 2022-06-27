@@ -5,6 +5,10 @@ local M = {}
 M.cache = {}
 M.last_tab = 0
 
+function M.on_tab_new()
+    vim.api.nvim_buf_set_option(0, "buflisted", true)
+end
+
 function M.on_tab_enter()
     local tab = vim.api.nvim_get_current_tabpage()
     local buf_nums = M.cache[tab]
