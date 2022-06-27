@@ -24,6 +24,7 @@ function M.on_tab_leave()
     end
     M.last_tab = tab
 end
+
 function M.on_tab_closed()
     M.cache[M.last_tab] = nil
 end
@@ -31,7 +32,7 @@ end
 function M.print_summary()
     print("tab" .. " " .. "buf" .. " " .. "name")
     for tab, buf_item in pairs(M.cache) do
-        for buf, _ in pairs(buf_item) do
+        for _, buf in pairs(buf_item) do
             local name = vim.api.nvim_buf_get_name(buf)
             print(tab .. " " .. buf .. " " .. name)
         end
