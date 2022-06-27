@@ -5,7 +5,7 @@ local M = {}
 M.cache = {}
 M.last_tab = 0
 
-function M.on_tab_new()
+function M.on_tab_new_entered()
     vim.api.nvim_buf_set_option(0, "buflisted", true)
 end
 

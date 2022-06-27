@@ -11,7 +11,7 @@ function M._setup_legacy()
         autocmd TabEnter * lua require("scope.core").on_tab_enter()
         autocmd TabLeave * lua require("scope.core").on_tab_leave()
         autocmd TabClosed * lua require("scope.core").on_tab_closed()
-        autocmd TabNew * lua require("scope.core").on_tab_new()
+        autocmd TabNewEntered * lua require("scope.core").on_tab_new_entered()
     augroup END
     ]]
 end
@@ -21,7 +21,7 @@ function M._setup()
     api.nvim_create_autocmd("TabEnter", { group = group, callback = core.on_tab_enter })
     api.nvim_create_autocmd("TabLeave", { group = group, callback = core.on_tab_leave })
     api.nvim_create_autocmd("TabClosed", { group = group, callback = core.on_tab_closed })
-    api.nvim_create_autocmd("TabNew", { group = group, callback = core.on_tab_new })
+    api.nvim_create_autocmd("TabNewEntered", { group = group, callback = core.on_tab_new_entered })
     api.nvim_create_user_command("ScopeList", core.print_summary, {}) --TODO: improve this
 end
 
