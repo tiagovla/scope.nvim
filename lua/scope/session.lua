@@ -29,13 +29,13 @@ function M.serialize_state()
     return vim.json.encode(state)
 end
 
-function M.load_session()
+function M.load_state()
     if vim.g.ScopeState ~= nil then
         M.deserialize_state(vim.g.ScopeState)
     end
 end
 
-function M.save_session()
+function M.save_state()
     vim.g.ScopeState = M.serialize_state()
 end
 
