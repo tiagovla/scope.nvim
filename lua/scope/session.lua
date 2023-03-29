@@ -1,9 +1,9 @@
-local utils = require "scope.utils"
+local utils = require("scope.utils")
 local M = {}
 
 function M.deserialize_state(state)
     local buf_nums = utils.get_valid_buffers()
-    for _, k in pairs(buf_nums) do
+    for _, k in pairs(buf_nums) do --FIX: this might not be required
         vim.api.nvim_buf_set_option(k, "buflisted", false)
     end
     local scope_state = vim.json.decode(state)
@@ -17,7 +17,7 @@ function M.deserialize_state(state)
 end
 
 function M.serialize_state()
-    local core = require "scope.core"
+    local core = require("scope.core")
     local scope_cache = {}
     for k, v in pairs(core.cache) do
         scope_cache[k] = utils.get_buffer_names(v)
