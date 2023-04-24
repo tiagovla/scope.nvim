@@ -32,7 +32,11 @@ Plug "tiagovla/scope.nvim"
 require("scope").setup()
 ```
 
-``` vim
-" .vimrc
-lua require("scope").setup()
+
+### Telescope
+Extension to show all buffers from all tabs with ``Telescope scope buffers``.
+``` lua
+-- init.lua
+    require("telescope").load_extension("scope")
 ```
+
