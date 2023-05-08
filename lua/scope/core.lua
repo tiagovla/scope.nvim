@@ -1,4 +1,4 @@
-local utils = require "scope.utils"
+local utils = require("scope.utils")
 
 local M = {}
 

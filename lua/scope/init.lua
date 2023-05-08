@@ -1,11 +1,11 @@
-local core = require "scope.core"
-local utils = require "scope.utils"
+local core = require("scope.core")
+local utils = require("scope.utils")
 local api = vim.api
 
 local M = {}
 
 function M._setup_legacy()
-    vim.cmd [[
+    vim.cmd([[
     augroup ScopeAU
         autocmd!
         autocmd TabEnter * lua require("scope.core").on_tab_enter()
@@ -13,7 +13,7 @@ function M._setup_legacy()
         autocmd TabClosed * lua require("scope.core").on_tab_closed()
         autocmd TabNewEntered * lua require("scope.core").on_tab_new_entered()
     augroup END
-    ]]
+    ]])
 end
 
 function M._setup()

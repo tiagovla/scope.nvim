@@ -1,14 +1,14 @@
 local has_telescope, telescope = pcall(require, "telescope")
 if not has_telescope then
-    error "This plugin requires nvim-telescope/telescope.nvim"
+    error("This plugin requires nvim-telescope/telescope.nvim")
 end
 
-local finders = require "telescope.finders"
+local finders = require("telescope.finders")
 local conf = require("telescope.config").values
-local make_entry = require "telescope.make_entry"
-local pickers = require "telescope.pickers"
+local make_entry = require("telescope.make_entry")
+local pickers = require("telescope.pickers")
 local filter = vim.tbl_filter
-local scope_core = require "scope.core"
+local scope_core = require("scope.core")
 
 local function extend_without_duplicates(l0, l1)
     local result = {}
@@ -84,7 +84,7 @@ local scope_buffers = function(opts)
     local buffers = {}
     local default_selection_idx = 1
     for _, bufnr in ipairs(bufnrs) do
-        local flag = bufnr == vim.fn.bufnr "" and "%" or (bufnr == vim.fn.bufnr "#" and "#" or " ")
+        local flag = bufnr == vim.fn.bufnr("") and "%" or (bufnr == vim.fn.bufnr("#") and "#" or " ")
 
         if opts.sort_lastused and not opts.ignore_current_buffer and flag == "#" then
             default_selection_idx = 2
@@ -112,10 +112,10 @@ local scope_buffers = function(opts)
     pickers
         .new(opts, {
             prompt_title = "Scope Buffers",
-            finder = finders.new_table {
+            finder = finders.new_table({
                 results = buffers,
                 entry_maker = opts.entry_maker or make_entry.gen_from_buffer(opts),
-            },
+            }),
             previewer = conf.grep_previewer(opts),
             sorter = conf.generic_sorter(opts),
             default_selection_index = default_selection_idx,
@@ -123,6 +123,6 @@ local scope_buffers = function(opts)
         :find()
 end
 
-return telescope.register_extension {
+return telescope.register_extension({
     exports = { buffers = scope_buffers },
-}
+})
