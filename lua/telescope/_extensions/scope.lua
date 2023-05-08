@@ -7,6 +7,8 @@ local finders = require("telescope.finders")
 local conf = require("telescope.config").values
 local make_entry = require("telescope.make_entry")
 local pickers = require("telescope.pickers")
+local actions = require("telescope.actions")
+local action_state = require("telescope.actions.state")
 local filter = vim.tbl_filter
 local scope_core = require("scope.core")
 
@@ -44,6 +46,17 @@ local function get_all_scope_buffers()
         end
     end
     return scope_buffs
+end
+
+local function find_buffer_tabindex(bufnr)
+    for tabi, bufs in pairs(scope_core.cache) do
+        for _, b in pairs(bufs) do
+            if b == bufnr then
+                return tabi
+            end
+        end
+    end
+    return nil
 end
 
 local scope_buffers = function(opts)
@@ -119,6 +132,18 @@ local scope_buffers = function(opts)
             previewer = conf.grep_previewer(opts),
             sorter = conf.generic_sorter(opts),
             default_selection_index = default_selection_idx,
+            attach_mappings = function(prompt_bufnr)
+                actions.select_default:replace(function()
+                    local selection = action_state.get_selected_entry()
+                    -- print(vim.inspect(selection))
+                    actions.close(prompt_bufnr)
+                    local tabi = find_buffer_tabindex(selection.bufnr)
+                    if tabi ~= nil then
+                        vim.cmd("tabnext " .. tabi)
+                    end
+                end)
+                return true
+            end,
         })
         :find()
 end
