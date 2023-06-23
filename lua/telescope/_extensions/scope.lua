@@ -141,6 +141,7 @@ local scope_buffers = function(opts)
                     if tabi ~= nil then
                         vim.cmd("tabnext " .. tabi)
                     end
+                    vim.cmd("buffer " .. selection.bufnr)
                 end)
                 return true
             end,
