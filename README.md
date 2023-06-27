@@ -42,9 +42,7 @@ Plug "tiagovla/scope.nvim"
 
 ```lua
 -- init.lua
-require("scope").setup({
-    restore_state = false, -- experimental
-})
+require("scope").setup({})
 
 ```
 
@@ -80,7 +78,7 @@ vim.opt.sessionoptions = { -- required
     "tabpages",
     "globals",
 }
-require("scope").setup({ restore_state = true })
+require("scope").setup({})
 ```
 
 #### 📢 Commands
