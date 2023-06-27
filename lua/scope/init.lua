@@ -23,11 +23,15 @@ function M._setup()
     vim.api.nvim_create_autocmd("TabLeave", { group = group, callback = core.on_tab_leave })
     vim.api.nvim_create_autocmd("TabClosed", { group = group, callback = core.on_tab_closed })
     vim.api.nvim_create_autocmd("TabNewEntered", { group = group, callback = core.on_tab_new_entered })
-    vim.api.nvim_create_user_command("ScopeSaveState", session.save_state, {})
+    vim.api.nvim_create_user_command("ScopeSaveState", function()
+        core.on_tab_leave()
+        core.on_tab_enter()
+        session.save_state()
+    end, {})
     vim.api.nvim_create_user_command("ScopeLoadState", session.load_state, {})
     vim.api.nvim_create_user_command("ScopeList", core.print_summary, {}) --TODO: improve this
     if config.restore_state then
-        -- api.nvim_create_autocmd("SessionLoadPost", { group = group, callback = session.load_state }) --TODO: implement event behavior
+        vim.api.nvim_create_autocmd("SessionLoadPost", { group = group, callback = session.load_state }) --TODO: implement event behavior
     end
 end
 
