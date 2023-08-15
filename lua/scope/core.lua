@@ -43,4 +43,46 @@ function M.print_summary()
     end
 end
 
+function M.move_current_buf(opts)
+    -- ensure current buflisted
+    local buflisted = vim.api.nvim_buf_get_option(0, "buflisted")
+    if not buflisted then
+        return
+    end
+
+    local target = tonumber(opts.args)
+    if target == nil then
+        -- invalid target tab, get input from user
+        local input = vim.fn.input("Move buf to: ")
+        if input == "" then -- user cancel
+            return
+        end
+
+        target = tonumber(input)
+        if target == nil then
+            vim.api.nvim_err_writeln("Invalid target tab")
+            return
+        end
+    end
+
+    if target < 0 or target > vim.fn.tabpagenr("$") or target == vim.api.nvim_get_current_tabpage() then
+        vim.api.nvim_err_writeln("Invalid target tab")
+        return
+    end
+
+    M.move_buf(vim.api.nvim_get_current_buf(), target)
+end
+
+function M.move_buf(bufnr, target)
+    -- copy current buf to target tab
+    local target_bufs = M.cache[target] or {}
+    target_bufs[#target_bufs + 1] = bufnr
+
+    -- remove current buf from current tab if it is not the last one in the tab
+    local buf_nums = utils.get_valid_buffers()
+    if #buf_nums > 1 then
+        vim.api.nvim_buf_set_option(bufnr, "buflisted", false)
+        vim.cmd("bprevious")
+    end
+end
 return M

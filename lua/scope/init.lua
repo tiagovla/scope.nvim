@@ -33,6 +33,7 @@ function M._setup()
     if config.restore_state then
         vim.api.nvim_create_autocmd("SessionLoadPost", { group = group, callback = session.load_state }) --TODO: implement event behavior
     end
+    vim.api.nvim_create_user_command("ScopeMoveBuf", core.move_current_buf, { nargs = "?" }) --TODO: improve this
 end
 
 function M.setup(overrides)
