@@ -33,6 +33,12 @@ function M.on_tab_closed()
     M.cache[M.last_tab] = nil
 end
 
+function M.revalidate()
+    local tab = vim.api.nvim_get_current_tabpage()
+    local buf_nums = utils.get_valid_buffers()
+    M.cache[tab] = buf_nums
+end
+
 function M.print_summary()
     print("tab" .. " " .. "buf" .. " " .. "name")
     for tab, buf_item in pairs(M.cache) do
