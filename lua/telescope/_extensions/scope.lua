@@ -140,7 +140,7 @@ local scope_buffers = function(opts)
                     actions.close(prompt_bufnr)
                     local tabi = find_buffer_tabindex(selection.bufnr)
                     if tabi ~= nil then
-                        vim.cmd("tabnext " .. tabi)
+                        vim.api.nvim_set_current_tabpage(tabi)
                     end
                     vim.cmd("buffer " .. selection.bufnr)
                 end)
