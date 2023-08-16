@@ -46,6 +46,12 @@ require("scope").setup({})
 
 ```
 
+## ⚙️ Commands
+
+| <div style="width:200px">Command</div> | Description                                                                                                                                                                                                                                                   |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `:ScopeMoveBuf <tab_nr>`               | Move current buffer to the specified tab. <br> If tab_nr is omitted/invalid, `scope.nvim` will prompt for a tab number. <br> If current buf is the only buf in current tab, it will be "copied" to target to retain the layout, otherwise, it will be "moved" |
+
 ## 🚀 Extensions
 
 ### 🔭 Telescope
