@@ -62,6 +62,7 @@ end
 local scope_buffers = function(opts)
     opts = opts or {}
     opts = apply_cwd_only_aliases(opts)
+    scope_core.revalidate()
     local bufnrs = filter(
         function(b)
             if opts.show_all_buffers == false and not vim.api.nvim_buf_is_loaded(b) then
