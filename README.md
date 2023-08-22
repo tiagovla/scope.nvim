@@ -135,6 +135,51 @@ Additionally, the API endpoints
 `require("scope.session").deserialize_state(state)` are available in case
 the user prefers to handle the state manually.
 
+### :floppy_disk: **Resession.nvim** Session Support (without `:mksession` underhood)
+
+Extension allows the usage of any supported plugin which wants to store/restore its data.
+
+#### ⚙ Session Manager Configurations
+
+<details>
+<summary>Resession.nvim</summary>
+<p></p>
+
+```lua
+{
+    "stevearc/resession.nvim",
+    lazy = false,
+    dependencies = {
+        {
+            "tiagovla/scope.nvim",
+            lazy = false,
+            config = true,
+        },
+    },
+    opts = {
+        -- override default filter
+        buf_filter = function(bufnr)
+            local buftype = vim.bo[bufnr].buftype
+            if buftype == 'help' then
+              return true
+            end
+            if buftype ~= "" and buftype ~= "acwrite" then
+              return false
+            end
+            if vim.api.nvim_buf_get_name(bufnr) == "" then
+              return false
+            end
+
+            -- this is required, since the default filter skips nobuflisted buffers
+            return true
+        end,
+        extensions = { scope = {} }, -- add scope.nvim extension
+    }
+},
+```
+
+</details>
+
 ## :fire: Contributing
 
 Pull requests from contributors are warmly welcome. To ensure the highest
