@@ -43,8 +43,32 @@ Plug "tiagovla/scope.nvim"
 ```lua
 -- init.lua
 require("scope").setup({})
-
 ```
+
+### Hooks
+
+You can customize the behavior of Scope.nvim using the provided hooks in your configuration. Here's an example of how to set up the `pre_tab_enter` hook:
+
+```lua
+-- init.lua
+require("scope").setup({
+    hooks = {
+        pre_tab_enter = function()
+            -- Your custom logic to run before entering a tab
+        end,
+    },
+})
+```
+The pre_tab_enter hook allows you to define custom actions to run before entering a tab. This function is just one of several hooks you can use to further customize your experience with Scope.nvim.
+
+Here's an overview of the available hooks:
+
+- `pre_tab_enter`: Run custom logic before entering a tab.
+- `post_tab_enter`: Run custom logic after entering a tab.
+- `pre_tab_leave`: Run custom logic before leaving a tab.
+- `post_tab_leave`: Run custom logic after leaving a tab.
+- `pre_tab_close`: Run custom logic before closing a tab.
+- `post_tab_close`: Run custom logic after closing a tab.
 
 ## ⚙️ Commands
 

@@ -1,4 +1,5 @@
 local utils = require("scope.utils")
+local config = require("scope.config")
 
 local M = {}
 
@@ -10,6 +11,9 @@ function M.on_tab_new_entered()
 end
 
 function M.on_tab_enter()
+    if config.hooks.pre_tab_enter ~= nil then
+        config.hooks.pre_tab_enter()
+    end
     local tab = vim.api.nvim_get_current_tabpage()
     local buf_nums = M.cache[tab]
     if buf_nums then
@@ -17,9 +21,15 @@ function M.on_tab_enter()
             vim.api.nvim_buf_set_option(k, "buflisted", true)
         end
     end
+    if config.hooks.post_tab_enter ~= nil then
+        config.hooks.post_tab_enter()
+    end
 end
 
 function M.on_tab_leave()
+    if config.hooks.pre_tab_leave ~= nil then
+        config.hooks.pre_tab_leave()
+    end
     local tab = vim.api.nvim_get_current_tabpage()
     local buf_nums = utils.get_valid_buffers()
     M.cache[tab] = buf_nums
@@ -27,10 +37,19 @@ function M.on_tab_leave()
         vim.api.nvim_buf_set_option(k, "buflisted", false)
     end
     M.last_tab = tab
+    if config.hooks.post_tab_leave ~= nil then
+        config.hooks.pre_tab_leave()
+    end
 end
 
 function M.on_tab_closed()
+    if config.hooks.pre_tab_close ~= nil then
+        config.hooks.pre_tab_close()
+    end
     M.cache[M.last_tab] = nil
+    if config.hooks.post_tab_close ~= nil then
+        config.hooks.post_tab_close()
+    end
 end
 
 function M.revalidate()
