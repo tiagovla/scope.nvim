@@ -38,7 +38,7 @@ function M.on_tab_leave()
     end
     M.last_tab = tab
     if config.hooks.post_tab_leave ~= nil then
-        config.hooks.pre_tab_leave()
+        config.hooks.post_tab_leave()
     end
 end
 
