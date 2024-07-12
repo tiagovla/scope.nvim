@@ -68,6 +68,71 @@ function M.print_summary()
     end
 end
 
+-- Smart closing of a scoped buffer, this makes sure you only delete a buffer if is not currently open in any other tab.
+-- If it is, then we just unlist the buffer.
+-- Also if it is the only buffer in the current tab, we close the tab
+-- If is not only the only buffer but also the last tab, we ask for permision to close it all
+---@param opts table, if buf is not passed we are considering the current buffer
+---@param opts.buf integer, if buf is not passed we are considering the current buffer
+---@param opts.force boolean, default to true to force close
+---@param opts.ask boolean, default to true to ask before closing the last tab ---@diagnostic disable-line
+---@return nil
+M.close_buffer = function(opts)
+    opts = opts or {}
+    local current_tab = vim.api.nvim_get_current_tabpage()
+    local current_buf = opts.buf or vim.api.nvim_get_current_buf()
+
+    -- Ensure the cache is up-to-date
+    M.revalidate()
+
+    local buffers_in_current_tab = M.cache[current_tab]
+
+    -- Check if the buffer exists in other tabs (could be a utils function)
+    local buffer_exists_in_other_tabs = false
+    for tab, buffers in pairs(M.cache) do
+        if tab ~= current_tab then
+            for _, buffer in ipairs(buffers) do
+                if buffer == current_buf then
+                    buffer_exists_in_other_tabs = true
+                    break
+                end
+            end
+        end
+        if buffer_exists_in_other_tabs then
+            break
+        end
+    end
+
+    -- If the buffer exists in other tabs, hide it in the current tab
+    if buffer_exists_in_other_tabs then
+        if #buffers_in_current_tab > 1 then
+            vim.api.nvim_buf_set_option(current_buf, "buflisted", false)
+            vim.cmd([[bprev]])
+        else
+            vim.cmd("tabclose")
+        end
+    else -- buffer does not exist in other tabs
+        local tab_count = #vim.api.nvim_list_tabpages()
+        if #buffers_in_current_tab == 1 then
+            if tab_count > 1 then
+                vim.api.nvim_buf_delete(current_buf, { force = opts.force })
+                vim.cmd("tabclose")
+            else
+                -- Ask for confirmation before quitting if it's the only tab
+                local choice = vim.fn.confirm("You're about to close the last tab. Do you want to quit?", "&Yes\n&No")
+                if choice == 1 then
+                    vim.cmd("qa!")
+                end
+            end
+        else
+            vim.api.nvim_buf_delete(current_buf, { force = opts.force })
+        end
+    end
+
+    -- Update the cache
+    M.revalidate()
+end
+
 function M.move_current_buf(opts)
     -- ensure current buflisted
     local buflisted = vim.api.nvim_buf_get_option(0, "buflisted")
