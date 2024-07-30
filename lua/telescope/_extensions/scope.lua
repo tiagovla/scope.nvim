@@ -9,6 +9,7 @@ local make_entry = require("telescope.make_entry")
 local pickers = require("telescope.pickers")
 local actions = require("telescope.actions")
 local action_state = require("telescope.actions.state")
+local transform_mod = require("telescope.actions.mt").transform_mod
 local filter = vim.tbl_filter
 local scope_core = require("scope.core")
 
@@ -133,7 +134,23 @@ local scope_buffers = function(opts)
             previewer = conf.grep_previewer(opts),
             sorter = conf.generic_sorter(opts),
             default_selection_index = default_selection_idx,
-            attach_mappings = function(prompt_bufnr)
+            attach_mappings = function(prompt_bufnr, map)
+                local function open_buf_in_window(prompt_buf)
+                    local selection = action_state.get_selected_entry()
+                    if not selection then
+                        print("Nothing currently selected")
+                        return
+                    end
+                    actions.close(prompt_buf)
+                    vim.cmd("buffer " .. selection.bufnr)
+                end
+
+                local actions_mod = { ["select_window"] = open_buf_in_window }
+                actions_mod = transform_mod(actions_mod)
+
+                map("i", "<C-w>", actions_mod.select_window)
+                map("n", "<C-w>", actions_mod.select_window)
+
                 actions.select_default:replace(function()
                     local selection = action_state.get_selected_entry()
                     -- print(vim.inspect(selection))
