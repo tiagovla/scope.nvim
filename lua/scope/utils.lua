@@ -47,7 +47,7 @@ function U.open_bufs_if_closed(buf_names)
 			end
 		end
 
-		if not buf_is_open then
+		if not buf_is_open and buf_name ~= "" then
 			vim.api.nvim_command("badd " .. buf_name)
 			local buf = vim.fn.bufnr(buf_name)
 			vim.api.nvim_buf_set_option(buf, "buflisted", false)
