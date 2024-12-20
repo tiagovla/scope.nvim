@@ -23,19 +23,7 @@ editing flow.
 [Lazy](https://github.com/folke/lazy.nvim)
 
 ```lua
-{ "tiagovla/scope.nvim" }
-```
-
-[packer](https://github.com/wbthomason/packer.nvim)
-
-```lua
-use("tiagovla/scope.nvim")
-```
-
-[vim-plug](https://github.com/junegunn/vim-plug)
-
-```vim
-Plug "tiagovla/scope.nvim"
+{ "tiagovla/scope.nvim", config = true }
 ```
 
 ## ⚙️ Configuration
@@ -59,6 +47,7 @@ require("scope").setup({
     },
 })
 ```
+
 The pre_tab_enter hook allows you to define custom actions to run before entering a tab. This function is just one of several hooks you can use to further customize your experience with Scope.nvim.
 
 Here's an overview of the available hooks:
