@@ -18,7 +18,9 @@ function M.on_tab_enter()
     local buf_nums = M.cache[tab]
     if buf_nums then
         for _, k in pairs(buf_nums) do
-            vim.api.nvim_buf_set_option(k, "buflisted", true)
+            if vim.api.nvim_buf_is_valid(k) then
+                vim.api.nvim_buf_set_option(k, "buflisted", true)
+            end
         end
     end
     if config.hooks.post_tab_enter ~= nil then
