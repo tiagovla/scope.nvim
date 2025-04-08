@@ -27,7 +27,9 @@ end
 function U.get_buffer_names(buf_nums)
     local buf_names = {}
     for _, buf in pairs(buf_nums) do
-        buf_names[#buf_names + 1] = vim.api.nvim_buf_get_name(buf)
+        if vim.api.nvim_buf_is_valid(buf) then
+            buf_names[#buf_names + 1] = vim.api.nvim_buf_get_name(buf)
+        end
     end
     return buf_names
 end
