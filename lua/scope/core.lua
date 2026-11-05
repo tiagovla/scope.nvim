@@ -61,13 +61,55 @@ function M.revalidate()
 end
 
 function M.print_summary()
-    print("tab" .. " " .. "buf" .. " " .. "name")
-    for tab, buf_item in pairs(M.cache) do
-        for _, buf in pairs(buf_item) do
-            local name = vim.api.nvim_buf_get_name(buf)
-            print(tab .. " " .. buf .. " " .. name)
+    local tabs = vim.api.nvim_list_tabpages()
+    local tab_is_cached = {}
+    local cached_tabs = 0
+    for _, tab in ipairs(tabs) do
+        tab_is_cached[tab] = M.cache[tab] ~= nil
+        if tab_is_cached[tab] then
+            cached_tabs = cached_tabs + 1
         end
     end
+
+    M.revalidate()
+    local current_tab = vim.api.nvim_get_current_tabpage()
+    local lines = {
+        cached_tabs == 0 and "Scope cache: empty"
+            or string.format("Scope cache: present for %d of %d tabs", cached_tabs, #tabs),
+        "",
+    }
+    for tab_number, tab in ipairs(tabs) do
+        local buffers = {}
+        for _, buf in ipairs(M.cache[tab] or {}) do
+            if vim.api.nvim_buf_is_valid(buf) then
+                buffers[#buffers + 1] = buf
+            end
+        end
+        table.sort(buffers)
+
+        if tab_number > 1 then
+            lines[#lines + 1] = ""
+        end
+        local count = #buffers
+        local markers = {}
+        if tab == current_tab then
+            markers[#markers + 1] = "current"
+        end
+        if not tab_is_cached[tab] then
+            markers[#markers + 1] = "not cached"
+        end
+        local status = #markers > 0 and " (" .. table.concat(markers, ", ") .. ")" or ""
+        local label = count == 1 and "buffer" or "buffers"
+        lines[#lines + 1] = string.format("Tab %d%s - %d %s", tab_number, status, count, label)
+        if count == 0 then
+            lines[#lines + 1] = "  No scoped buffers"
+        end
+        for _, buf in ipairs(buffers) do
+            local name = vim.api.nvim_buf_get_name(buf)
+            lines[#lines + 1] = string.format("  [%d] %s", buf, name ~= "" and name or "[No Name]")
+        end
+    end
+    vim.api.nvim_echo({ { table.concat(lines, "\n") } }, true, {})
 end
 
 -- Smart closing of a scoped buffer, this makes sure you only delete a buffer if is not currently open in any other tab.
