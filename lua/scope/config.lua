@@ -4,9 +4,9 @@ local config = {
         pre_tab_enter = nil,
         post_tab_enter = nil,
         pre_tab_leave = nil,
-        post_tab_leave= nil,
-        pre_tab_close= nil,
-        post_tab_close= nil,
+        post_tab_leave = nil,
+        pre_tab_close = nil,
+        post_tab_close = nil,
     },
 }
 
