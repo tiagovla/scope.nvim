@@ -14,7 +14,7 @@ Seamlessly navigate through buffers within each tab using commands like
 Experience the power of scoped buffers, boost productivity, and reclaim your
 editing flow.
 
-![scope](https://user-images.githubusercontent.com/30515389/156297097-08208d0f-9715-4fc4-8aa0-f5980c21173d.gif)
+<img width="928" height="496" alt="scope-annotated" src="https://github.com/user-attachments/assets/35e952db-1f00-4be0-98cd-fc50cfbcf5e2" />
 
 ## 📦 Installation
 
