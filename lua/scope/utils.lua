@@ -35,26 +35,26 @@ function U.get_buffer_names(buf_nums)
 end
 
 function U.open_bufs_if_closed(buf_names)
-	for _, buf_name in pairs(buf_names) do
-		local buf_nums = vim.api.nvim_list_bufs()
-		local buf_is_open = false
+    for _, buf_name in pairs(buf_names) do
+        local buf_nums = vim.api.nvim_list_bufs()
+        local buf_is_open = false
 
-		for _, buf_num in pairs(buf_nums) do
-			local open_buf = vim.api.nvim_buf_get_name(buf_num)
-			if buf_name ~= "" and buf_name == open_buf then
-				buf_is_open = true
-			end
-			if buf_is_open then
-				break
-			end
-		end
+        for _, buf_num in pairs(buf_nums) do
+            local open_buf = vim.api.nvim_buf_get_name(buf_num)
+            if buf_name ~= "" and buf_name == open_buf then
+                buf_is_open = true
+            end
+            if buf_is_open then
+                break
+            end
+        end
 
-		if not buf_is_open and buf_name ~= "" then
-			vim.api.nvim_command("badd " .. buf_name)
-			local buf = vim.fn.bufnr(buf_name)
-			vim.api.nvim_buf_set_option(buf, "buflisted", false)
-		end
-	end
+        if not buf_is_open and buf_name ~= "" then
+            vim.api.nvim_command("badd " .. buf_name)
+            local buf = vim.fn.bufnr(buf_name)
+            vim.api.nvim_buf_set_option(buf, "buflisted", false)
+        end
+    end
 end
 
 function U.get_buffer_ids(buf_names)
