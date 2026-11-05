@@ -1,0 +1,14 @@
+#!/bin/sh
+set -eu
+
+cd "$(dirname "$0")/.."
+
+for test in tests/test_*.lua; do
+    echo "RUN  $test"
+    if nvim --headless -u NONE -i NONE --cmd 'set rtp+=.' \
+        -c "lua local ok, err = xpcall(function() dofile('$test') end, function(err) return err end); if not ok then io.stderr:write(err, '\\n'); os.exit(1) end; vim.cmd('qa!')"; then
+        echo "PASS $test"
+    else
+        exit 1
+    fi
+done
