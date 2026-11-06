@@ -9,6 +9,7 @@ function M._setup_legacy()
     vim.cmd([[
     augroup ScopeAU
         autocmd!
+        autocmd BufEnter * lua require("scope.core").on_buf_enter()
         autocmd TabEnter * lua require("scope.core").on_tab_enter()
         autocmd TabLeave * lua require("scope.core").on_tab_leave()
         autocmd TabClosed * lua require("scope.core").on_tab_closed()
@@ -19,6 +20,7 @@ end
 
 function M._setup()
     local group = vim.api.nvim_create_augroup("ScopeAU", {})
+    vim.api.nvim_create_autocmd("BufEnter", { group = group, callback = core.on_buf_enter })
     vim.api.nvim_create_autocmd("TabEnter", { group = group, callback = core.on_tab_enter })
     vim.api.nvim_create_autocmd("TabLeave", { group = group, callback = core.on_tab_leave })
     vim.api.nvim_create_autocmd("TabClosed", { group = group, callback = core.on_tab_closed })
