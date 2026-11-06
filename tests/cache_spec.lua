@@ -4,6 +4,34 @@ describe("tab buffer cache", function()
     before_each(test_utils.setup)
     after_each(test_utils.teardown)
 
+    it("lists a buffer opened from another tab with :buffer (#14)", function()
+        vim.cmd.edit(test_utils.temp_file("shared.lua"))
+        local shared_buf = vim.api.nvim_get_current_buf()
+        vim.cmd.edit(test_utils.temp_file("private.lua"))
+        local private_buf = vim.api.nvim_get_current_buf()
+
+        vim.cmd.tabnew()
+        local tab = vim.api.nvim_get_current_tabpage()
+        assert.equals(0, vim.fn.buflisted(shared_buf))
+
+        vim.cmd("buffer " .. shared_buf)
+
+        assert.equals(tab, vim.api.nvim_get_current_tabpage())
+        assert.equals(shared_buf, vim.api.nvim_get_current_buf())
+        assert.equals(1, vim.fn.buflisted(shared_buf), "the buffer opened in this tab should appear in :ls")
+        assert.equals(0, vim.fn.buflisted(private_buf), "the other buffer should stay scoped to its original tab")
+
+        vim.cmd.tabprevious()
+        assert.is_true(vim.tbl_contains(require("scope.core").cache[tab], shared_buf))
+        vim.cmd.tabnext()
+        assert.equals(
+            1,
+            vim.fn.buflisted(shared_buf),
+            "the opened buffer should stay listed when returning to this tab"
+        )
+        assert.equals(0, vim.fn.buflisted(private_buf))
+    end)
+
     it("keeps each tab's buffers separate", function()
         local core = require("scope.core")
 
