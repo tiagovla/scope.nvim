@@ -7,7 +7,19 @@ M.cache = {}
 M.last_tab = 0
 
 function M.on_tab_new_entered()
-    vim.api.nvim_buf_set_option(0, "buflisted", true)
+    local buf = vim.api.nvim_get_current_buf()
+    vim.api.nvim_buf_set_option(buf, "buflisted", true)
+    if not M.cache[vim.api.nvim_get_current_tabpage()] or not M.cache[M.last_tab] then
+        return
+    end
+    for _, win in ipairs(vim.api.nvim_tabpage_list_wins(M.last_tab)) do
+        if vim.api.nvim_win_get_buf(win) == buf then
+            return
+        end
+    end
+    M.cache[M.last_tab] = vim.tbl_filter(function(buffer)
+        return buffer ~= buf
+    end, M.cache[M.last_tab])
 end
 
 function M.on_tab_enter()
