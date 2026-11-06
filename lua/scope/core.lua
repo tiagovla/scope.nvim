@@ -48,7 +48,44 @@ function M.on_tab_closed()
     if config.hooks.pre_tab_close ~= nil then
         config.hooks.pre_tab_close()
     end
-    M.cache[M.last_tab] = nil
+    local current_buf = vim.api.nvim_get_current_buf()
+    local current_tab = vim.api.nvim_get_current_tabpage()
+    for tab, buffers in pairs(M.cache) do
+        if not vim.api.nvim_tabpage_is_valid(tab) then
+            -- Wait for :bdelete to finish before recovering buffers from an inactive tab it closed.
+            if vim.bo[current_buf].buflisted and vim.tbl_contains(buffers, current_buf) then
+                vim.schedule(function()
+                    if vim.api.nvim_buf_is_valid(current_buf) and vim.bo[current_buf].buflisted then
+                        return
+                    end
+                    if vim.api.nvim_get_current_tabpage() ~= current_tab then
+                        return
+                    end
+                    local replacement = vim.api.nvim_get_current_buf()
+                    if
+                        vim.api.nvim_buf_get_name(replacement) ~= ""
+                        or vim.bo[replacement].buftype ~= ""
+                        or vim.bo[replacement].modified
+                    then
+                        return
+                    end
+                    local fallback
+                    for _, buf in ipairs(buffers) do
+                        if buf ~= current_buf and vim.api.nvim_buf_is_valid(buf) then
+                            vim.api.nvim_buf_set_option(buf, "buflisted", true)
+                            fallback = fallback or buf
+                        end
+                    end
+                    if fallback then
+                        vim.api.nvim_set_current_buf(fallback)
+                        vim.api.nvim_buf_set_option(replacement, "buflisted", false)
+                        M.revalidate()
+                    end
+                end)
+            end
+            M.cache[tab] = nil
+        end
+    end
     if config.hooks.post_tab_close ~= nil then
         config.hooks.post_tab_close()
     end
