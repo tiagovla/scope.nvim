@@ -4,7 +4,7 @@ local M = {}
 function M.deserialize_state(state)
     local buf_nums = utils.get_valid_buffers()
     for _, k in pairs(buf_nums) do
-        vim.api.nvim_buf_set_option(k, "buflisted", false)
+        vim.bo[k].buflisted = false
     end
     local scope_state = vim.json.decode(state)
     local core = require("scope.core")

@@ -45,11 +45,7 @@ describe("session state", function()
         local current = vim.api.nvim_get_current_tabpage()
         for _, tab in ipairs(tabs) do
             for _, buf in ipairs(core.cache[tab]) do
-                assert.equals(
-                    tab == current,
-                    vim.api.nvim_buf_get_option(buf, "buflisted"),
-                    "restore should list only current tab buffers"
-                )
+                assert.equals(tab == current, vim.bo[buf].buflisted, "restore should list only current tab buffers")
             end
         end
     end)
