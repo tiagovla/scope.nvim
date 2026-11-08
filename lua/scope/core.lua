@@ -13,7 +13,7 @@ function M.on_buf_enter()
     end
     for _, buffers in pairs(M.cache) do
         if vim.tbl_contains(buffers, buf) then
-            vim.api.nvim_buf_set_option(buf, "buflisted", true)
+            vim.bo[buf].buflisted = true
             return
         end
     end
@@ -21,7 +21,7 @@ end
 
 function M.on_tab_new_entered()
     local buf = vim.api.nvim_get_current_buf()
-    vim.api.nvim_buf_set_option(buf, "buflisted", true)
+    vim.bo[buf].buflisted = true
     if not M.cache[vim.api.nvim_get_current_tabpage()] or not M.cache[M.last_tab] then
         return
     end
@@ -44,7 +44,7 @@ function M.on_tab_enter()
     if buf_nums then
         for _, k in pairs(buf_nums) do
             if vim.api.nvim_buf_is_valid(k) then
-                vim.api.nvim_buf_set_option(k, "buflisted", true)
+                vim.bo[k].buflisted = true
             end
         end
     end
@@ -61,7 +61,7 @@ function M.on_tab_leave()
     local buf_nums = utils.get_valid_buffers()
     M.cache[tab] = buf_nums
     for _, k in pairs(buf_nums) do
-        vim.api.nvim_buf_set_option(k, "buflisted", false)
+        vim.bo[k].buflisted = false
     end
     M.last_tab = tab
     if config.hooks.post_tab_leave ~= nil then
@@ -97,13 +97,13 @@ function M.on_tab_closed()
                     local fallback
                     for _, buf in ipairs(buffers) do
                         if buf ~= current_buf and vim.api.nvim_buf_is_valid(buf) then
-                            vim.api.nvim_buf_set_option(buf, "buflisted", true)
+                            vim.bo[buf].buflisted = true
                             fallback = fallback or buf
                         end
                     end
                     if fallback then
                         vim.api.nvim_set_current_buf(fallback)
-                        vim.api.nvim_buf_set_option(replacement, "buflisted", false)
+                        vim.bo[replacement].buflisted = false
                         M.revalidate()
                     end
                 end)
@@ -212,7 +212,7 @@ M.close_buffer = function(opts)
     -- If the buffer exists in other tabs, hide it in the current tab
     if buffer_exists_in_other_tabs then
         if #buffers_in_current_tab > 1 then
-            vim.api.nvim_buf_set_option(current_buf, "buflisted", false)
+            vim.bo[current_buf].buflisted = false
             vim.cmd([[bprev]])
         else
             vim.cmd("tabclose")
@@ -247,7 +247,7 @@ end
 
 function M.move_current_buf(opts)
     -- ensure current buflisted
-    local buflisted = vim.api.nvim_buf_get_option(0, "buflisted")
+    local buflisted = vim.bo.buflisted
     if not buflisted then
         return
     end
@@ -267,7 +267,7 @@ function M.move_current_buf(opts)
     local target_handle = vim.api.nvim_list_tabpages()[target]
 
     if target_handle == nil then
-        vim.api.nvim_err_writeln("Invalid target tab")
+        vim.notify("Invalid target tab", vim.log.levels.ERROR)
         return
     end
 
@@ -282,7 +282,7 @@ function M.move_buf(bufnr, target)
     -- remove current buf from current tab if it is not the last one in the tab
     local buf_nums = utils.get_valid_buffers()
     if #buf_nums > 1 then
-        vim.api.nvim_buf_set_option(bufnr, "buflisted", false)
+        vim.bo[bufnr].buflisted = false
 
         -- current buf are not in the current tab anymore, so we switch to the previous tab
         if bufnr == vim.api.nvim_get_current_buf() then
